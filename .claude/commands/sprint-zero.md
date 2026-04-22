@@ -60,6 +60,37 @@ Print:
 
 ---
 
+## Step 1b — Supabase preflight
+
+Before the scoping conversation begins, check whether a `.env` file exists at the project root and contains non-empty values for `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, and `DATABASE_URL`.
+
+If the file is missing or any key is empty, print this block exactly and wait for the user to confirm before continuing:
+
+> **Supabase setup required before we build.**
+>
+> Sprint Zero needs a live Supabase project. Here's what to do — takes about 3 minutes:
+>
+> 1. Go to [supabase.com](https://supabase.com) → New project. Choose any name and region.
+> 2. Once created, go to **Settings → API**. Copy:
+>    - **Project URL** → `SUPABASE_URL`
+>    - **anon / public** key → `SUPABASE_PUBLISHABLE_KEY`
+>    - **service_role** key → `SUPABASE_SECRET_KEY`
+> 3. Go to **Settings → Database → Connection string → URI** (choose Session mode, port 5432). Copy the full URL → `DATABASE_URL`. It looks like: `postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres`
+> 4. Go to **Authentication → Providers → Email** and make sure it is enabled.
+> 5. Create a `.env` file at the project root (copy `.env.example` and fill in all four values).
+>
+> Reply "ready" when done and Sprint Zero will continue.
+
+After the user replies "ready", re-check `.env`. If it still looks empty, print the same block again and wait. Do not proceed to scoping until all four keys are present.
+
+If the file exists and all four keys are non-empty, print:
+
+> `.env` found with Supabase credentials. Continuing.
+
+Note: database tables are created automatically when `node seed.js` runs — no manual SQL pasting required.
+
+---
+
 ## Step 2 — Scoping
 
 Check whether `docs/scope.md` exists. If it does, print:
@@ -200,6 +231,14 @@ Ready to demo: YES / NO
 ```
 
 If QA reports failures, print `STATE: QA_NEEDED` with recovery instructions after the summary.
+
+If the QA report mentions that database tables are missing or the seed script failed, print this reminder:
+
+> **Database setup needed — likely a missing `DATABASE_URL`:**
+> 1. Go to Supabase Dashboard → Settings → Database → Connection string → URI (Session mode, port 5432).
+> 2. Copy the full URL and add it to `server/.env` as `DATABASE_URL=...`
+> 3. Run `cd server && node seed.js` — this creates the tables automatically and populates demo data.
+> 4. Restart the server and re-run QA.
 
 <!-- $ARGUMENTS is the interpolation token Claude Code replaces with everything the user typed after /sprint-zero. It must appear in the file for URL and flag values to be accessible throughout these instructions. -->
 $ARGUMENTS

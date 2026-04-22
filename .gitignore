@@ -19,6 +19,7 @@ out/
 # Claude Code local settings
 # Keep .claude/commands and .claude/agents committed — only ignore local overrides
 .claude/settings.local.json
+.claude/settings.json
 
 # Supabase local dev
 # Sprint Zero users bring their own hosted Supabase project.
@@ -75,3 +76,4 @@ tmp/
 
 # notes
 plan.md
+.notes/
