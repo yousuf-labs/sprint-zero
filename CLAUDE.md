@@ -27,11 +27,11 @@ The audience is PMs, founders, and non-developers who can follow terminal output
 
 The user picks one of three levels up front. The scope level drives every downstream agent's behaviour.
 
-| Level | What it produces |
-|---|---|
-| `clickable` | Mock backend, fake data, no auth. Useful for pitching and flow reviews. |
-| `working demo` | Real Supabase, real auth, one core loop works end-to-end. The main v1 target. |
-| `pilot-ready` | Working demo plus error boundaries, loading states, input validation, and Playwright happy path + one error path per loop. |
+| Level          | What it produces                                                                                                           |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `clickable`    | Mock backend, fake data, no auth. Useful for pitching and flow reviews.                                                    |
+| `working demo` | Real Supabase, real auth, one core loop works end-to-end. The main v1 target.                                              |
+| `pilot-ready`  | Working demo plus error boundaries, loading states, input validation, and Playwright happy path + one error path per loop. |
 
 `docs/scope.md` is the lever that carries this choice through the pipeline.
 
@@ -64,7 +64,8 @@ sprint-zero/
 ├── README.md                 ← public-facing description
 ├── plan.md                   ← phased build plan for this repo itself
 ├── LICENSE                   ← MIT, Yousuf Alvi
-├── .env.example              ← Supabase URL + anon key template
+├── .env.example              ← SUPABASE_URL + SUPABASE_PUBLISHABLE_KEY + SUPABASE_SECRET_KEY
+template
 ├── .gitignore
 ├── .claude/
 │   ├── commands/             ← slash commands (Phase 2)
@@ -102,6 +103,7 @@ User
 ```
 
 ### tech-lead
+
 - Reads `docs/prd.md`, `docs/api-contract.md`, `docs/decisions.md`, and `docs/scope.md`
 - Briefs the user on what it understood
 - Spawns `backend-engineer` and `frontend-engineer` in parallel in a single turn
@@ -110,6 +112,7 @@ User
 - Does not write application code
 
 ### backend-engineer
+
 - Builds the Express API in `server/`
 - Uses `@supabase/supabase-js` for data access
 - JWT verification middleware on protected routes
@@ -117,12 +120,14 @@ User
 - Builds strictly to `docs/api-contract.md`
 
 ### frontend-engineer
+
 - Builds the React app in `client/` using Vite
 - Supabase Auth: login page, signup page, session context, protected route wrapper
 - Product screens come from `docs/user-stories.md` and the contract
 - Form patterns standardised so QA can drive them
 
 ### qa-engineer
+
 - Runs the full auth dance (signup, session, logout, login, protected route, 401 on expired token)
 - Runs the core product loop end-to-end
 - At `pilot-ready` scope, adds one error-path test per loop
@@ -178,3 +183,15 @@ When a user invokes `/sprint-zero <url>`, the orchestrator adds:
 - Audience for this repo: PMs and non-developers using Claude Code
 - This repo's own build is tracked in `plan.md`, phase by phase. Each phase is a single chat session. Do not skip ahead.
 - Mini Twenty is Sprint Zero's worked example (Phase 5). Until then, `examples/` is intentionally empty.
+
+---
+
+## Build orchestration pattern
+
+Sprint Zero uses a two-tier pattern that respects Claude Code's sub-agent limitations:
+
+- `tech-lead` is a **briefing sub-agent** — reads specs, returns a build brief, does NOT spawn engineers
+- The **main Claude Code session** is the orchestrator — spawns backend-engineer and frontend-engineer in parallel, then qa-engineer after both complete
+- `backend-engineer`, `frontend-engineer`, `qa-engineer` are **worker sub-agents** — isolated context, no sub-agent spawning themselves
+
+When running a build, invoke tech-lead first for the brief, then follow the recommended execution order it returns.

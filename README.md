@@ -49,20 +49,18 @@ URL → scoping conversation → spec set (PRD, decisions, stories, contract) �
 
 ---
 
-## Getting started
+## Quick start
 
-Right now the repo is the skeleton — you can clone it, read the roadmap, and see the shape of what's coming. The single-command flow (`/sprint-zero <url>`) ships in Phase 4.
+1. Clone this repo and open it in Claude Code.
+2. Copy `.env.example` to `.env` and paste in your Supabase project URL, Publishable key, and Secret key. The free tier is fine. Settings → API in your Supabase dashboard has both values.
+3. Launch Claude Code from the repo root (`claude .`), then start the run in one of two ways:
+   - **Guided** — run `/sprint-zero` with no arguments. Sprint Zero will ask for a project name, company URL, and optional repo URL in one combined question.
+   - **Direct** — run `/sprint-zero <company-url>` and skip the intake. For example, `/sprint-zero https://linear.app`. Add a second URL to reverse-engineer a specific repo alongside the product site.
+4. Answer the scoping question (level, core loop, excludes). A paragraph is fine — Sprint Zero parses it.
+5. Wait. The spec set generates first, then the backend and frontend build in parallel, then QA runs. For a working demo, expect the full run to take several minutes.
+6. When QA reports back, start the servers: `node server/index.js` in one terminal, `npm run dev` inside `client/` in another. Open `http://localhost:5173`.
 
-When it's ready, the flow will be:
-
-1. Clone this repo
-2. Create a Supabase project and paste the URL and anon key into `.env`
-3. Launch Claude Code from the repo root
-4. Run `/sprint-zero <company-url>` and answer the scoping question
-5. Wait for the team to finish
-6. Run the app locally
-
-Until then, the `plan.md` file shows exactly what's being built and in what order.
+**Resuming after a failure:** if the run stops mid-way, the named state tells you where it failed. Re-run `/sprint-zero <url>` — already-completed spec files are detected and skipped automatically. Use `--fresh` to regenerate all specs from scratch, or `--rebuild` to re-run the build and QA without redoing the spec work.
 
 ---
 
@@ -72,7 +70,6 @@ Items below are tracked in `plan.md`. Nothing here is built yet.
 
 - **Phase 2 — scoping and discovery layer:** six slash commands that turn a URL plus scoping answers into a full spec set (`docs/scope.md`, `docs/reference-brief.md`, `docs/prd.md`, `docs/decisions.md`, `docs/user-stories.md`, `docs/api-contract.md`).
 - **Phase 3 — build layer:** four sub-agents (tech lead, backend engineer, frontend engineer, QA engineer) that take a spec set and produce a working product on the Express + Supabase + React + Vite stack, with Playwright-driven validation.
-- **Phase 4 — kickoff orchestrator:** the single `/sprint-zero <url>` command that chains discovery and build into one flow, with named error states you can resume from.
 - **Phase 5 — Mini Twenty example:** a worked example inside `examples/mini-twenty/` built by running Sprint Zero against the Twenty CRM. This is the canonical proof the kit works end-to-end.
 - **Phase 6 — polish for launch:** README v2, architecture diagrams, demo GIF, `CONTRIBUTING.md`, and launch content.
 
@@ -81,9 +78,9 @@ Items below are tracked in `plan.md`. Nothing here is built yet.
 ## Status
 
 - Phase 1 — Foundation — complete
-- Phase 2 — Scoping and discovery layer — not started
-- Phase 3 — Build layer — not started
-- Phase 4 — Kickoff orchestrator — not started
+- Phase 2 — Scoping and discovery layer — complete
+- Phase 3 — Build layer — complete
+- Phase 4 — Kickoff orchestrator — complete
 - Phase 5 — Mini Twenty example — not started
 - Phase 6 — Polish for launch — not started
 
