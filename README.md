@@ -247,7 +247,7 @@ Once QA passes, `/sprint-zero` automatically:
 5. Starts the frontend on [http://localhost:5173](http://localhost:5173) in the background
 6. Prints the demo user's email and password
 
-Open [http://localhost:5173](http://localhost:5173) and log in with the credentials from the launch summary.
+Open [http://localhost:5173](http://localhost:5173). You'll land on a polished marketing page — click **Log in** in the top nav and use the credentials from the launch summary to enter the product.
 
 To stop the servers when you're done:
 

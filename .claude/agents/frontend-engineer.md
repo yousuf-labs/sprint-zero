@@ -63,13 +63,15 @@ client/
       ProtectedRoute.jsx   ← Wrapper that redirects to /login if no session
       LoginPage.jsx        ← Email + password login form
       SignupPage.jsx       ← Email + password signup form
+    marketing/
+      LandingPage.jsx      ← Public marketing page at /, links to /login and /signup
     pages/
       <page>.jsx        ← One component per product screen from the PRD
     components/
       <component>.jsx   ← Forms and shared UI bits
 ```
 
-For `clickable` scope, drop the `auth/` folder entirely and the `.env.example`. `main.jsx` just renders `App`. `api/client.js` uses hardcoded data.
+For `clickable` scope, drop the `auth/` folder entirely and the `.env.example`. `main.jsx` just renders `App`. `api/client.js` uses hardcoded data. The landing page still ships — its primary CTA goes straight to the product instead of `/login`.
 
 Do not create files outside of `client/`. Do not touch anything in `server/` or `docs/`.
 
@@ -96,10 +98,47 @@ Do not create files outside of `client/`. Do not touch anything in `server/` or 
 
 **`App.jsx`** — routing:
 
+- `/` → `LandingPage` (public, always accessible — even when logged in)
 - `/login` → `LoginPage`
 - `/signup` → `SignupPage`
-- All product routes wrapped in `<ProtectedRoute>`
-- A "Log out" button in the navigation that calls `signOut` and redirects to `/login`
+- All product routes wrapped in `<ProtectedRoute>` (mount them under a path like `/app/*`)
+- A "Log out" button in the in-product navigation that calls `signOut` and redirects to `/`
+
+---
+
+## `LandingPage.jsx` — polished YC-quality marketing page
+
+The landing page is the first thing the PM shows in a demo. It needs to feel like a real product, not a placeholder. Inspired by the [Twenty CRM](https://twenty.com) homepage: clean typography, generous whitespace, dark or light theme done well, no gradient soup.
+
+**Structure (in this order):**
+
+1. **Top nav** — product wordmark on the left (use the project name from `docs/scope.md` if present, otherwise infer one from the PRD). On the right: text links for "Features" and "Pricing" (anchor links to sections below), plus a "Log in" link to `/login` and a primary "Get started" button to `/signup`.
+2. **Hero** — one-line bold headline that names the product's core promise (derive it from the PRD's "what we're building and why" section). One sub-headline sentence underneath. Primary CTA button "Get started — it's free" → `/signup`. Secondary text link "Log in" → `/login`. No stock illustration; use a stylised UI mockup (a styled `<div>` representing the product's hero screen — for a CRM this would be a kanban-like card grid).
+3. **Three-up feature row** — three short feature cards. Pull the three most important features from the PRD's user stories. Each card: small icon (use a unicode glyph or simple SVG, no icon library), one-line title, two-line description.
+4. **"How it works" section** — three numbered steps describing the core loop named in `docs/scope.md`. One sentence per step.
+5. **Social proof strip** — five fake-but-believable company logos as text wordmarks in muted grey ("Trusted by teams at Northwind, Acme, Globex, Initech, Hooli"). Make it look like a logo bar even though it's text.
+6. **Final CTA section** — large headline ("Ready to ship?"), subline, big "Get started" button → `/signup`.
+7. **Footer** — three columns (Product, Company, Resources) with placeholder links (use `#` hrefs). Copyright line at the bottom with the current year.
+
+**Design rules:**
+
+- Single-column max width 1200px, centred. Sections are full-bleed with the content centred inside.
+- Tailwind utility classes (assume Tailwind is set up — if not, set it up; this is the one place it's worth the dependency).
+- Light theme: white background, near-black text (`#0a0a0a`), one accent colour (pick from the reference brand if obvious, otherwise indigo). No gradients on the body. One subtle gradient on the primary CTA button is fine.
+- Typography: large hero (text-5xl or text-6xl), tight tracking on headlines, comfortable line-height on body. System font stack is fine.
+- Generous vertical rhythm: minimum `py-24` between sections.
+- No external image dependencies — every visual is CSS or unicode/SVG.
+- Mobile-responsive: hero collapses cleanly, nav becomes a single-row, feature row stacks.
+
+**CTAs and testids for QA:**
+
+- Top-nav login link: `data-testid="nav-login"`
+- Top-nav signup button: `data-testid="nav-signup"`
+- Hero primary CTA: `data-testid="hero-cta-signup"`
+- Hero secondary login link: `data-testid="hero-login"`
+- Final CTA button: `data-testid="footer-cta-signup"`
+
+QA's first browser test for `MVP` and `Prod` scope navigates to `/` and clicks `nav-login` to start the auth dance — make sure that path works.
 
 **`api/client.js`** — central file for all fetch calls.
 

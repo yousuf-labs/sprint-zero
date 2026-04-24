@@ -125,17 +125,18 @@ Use the Playwright MCP tools to drive a real browser against the running fronten
 
 ### For `clickable` scope
 
-1. Navigate to `http://localhost:5173`
-2. Take a snapshot to confirm the product loads directly (no login wall)
-3. Click through each product screen and snapshot each
-4. Close the browser
+1. Navigate to `http://localhost:5173` — assert the landing page renders
+2. Snapshot the landing page
+3. Click `data-testid="hero-cta-signup"` to enter the product
+4. Click through each product screen and snapshot each
+5. Close the browser
 
 ### For `MVP` and `Prod` scope — THE FULL AUTH DANCE
 
 Use a fresh test email (generate a timestamped one, e.g. `qa-test-<timestamp>@example.com`) so signup doesn't collide with the seeded user.
 
-1. Navigate to `http://localhost:5173` — assert you land on `/login` (protected route redirect)
-2. Click `data-testid="go-to-signup"`
+1. Navigate to `http://localhost:5173` — assert the landing page renders. Snapshot it.
+2. Click `data-testid="nav-login"` — assert you land on `/login`. Then click `data-testid="go-to-signup"`.
 3. Fill `email-input` and `password-input` with the fresh test creds
 4. Click `data-testid="signup-button"`
 5. Wait for navigation to the post-login landing route
