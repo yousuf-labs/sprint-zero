@@ -37,7 +37,7 @@ Each needs acceptance criteria that include the Supabase Auth behaviour — e.g.
 
 After the stories, add two sections:
 
-**Edge cases to discuss** — 3-5 scenarios the team should talk through before building. For `pilot-ready`, include at least one error-path case per Must-have story. For `clickable` and `working demo`, keep edge cases tighter.
+**Edge cases to discuss** — 3-5 scenarios the team should talk through before building. For `Prod`, include at least one error-path case per Must-have story. For `clickable` and `MVP`, keep edge cases tighter.
 
 **Questions for the team** — 2-3 questions that genuinely block building. Format as questions. Mark each with `[NEEDS CLARIFICATION]` only if it actually blocks — don't pad.
 

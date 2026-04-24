@@ -34,8 +34,8 @@ Then capture the deliberate technical choices:
 The build level determines how much explanation each cut needs:
 
 - `clickable` — many cuts, brief reasoning ("out of scope for a clickable demo")
-- `working demo` — moderate cuts, per-cut reasoning ("core loop only")
-- `pilot-ready` — fewer cuts, more considered reasoning (these are the cuts that survive real users)
+- `MVP` — moderate cuts, per-cut reasoning ("core loop only")
+- `Prod` — fewer cuts, more considered reasoning (these are the cuts that survive real users)
 
 **Auth is never a scope cut.** It's in every level. Don't list "authentication" as a decision.
 
@@ -72,7 +72,7 @@ Short paragraph: what we built, what we compared it against, and why the cuts we
 - **We chose:** Playwright driven by the QA sub-agent through the Playwright MCP
 - **Reason:** Browser-driven tests catch the real user journey, including the auth dance. MCP means the agent drives the browser without us wiring a test framework by hand.
 
-### Build level: [clickable | working demo | pilot-ready]
+### Build level: [clickable | MVP | Prod]
 
 - **We chose:** [level]
 - **Reason:** [one or two sentences on why this level fits the user's goal from scope.md]

@@ -10,7 +10,7 @@ You are the Backend Engineer for the Sprint Zero build.
 
 Before writing a single line of code, read these files in this order:
 
-- `docs/scope.md` — the scope level (clickable / working demo / pilot-ready) and core loop. This calibrates what you build.
+- `docs/scope.md` — the scope level (clickable / MVP / Prod) and core loop. This calibrates what you build.
 - `docs/api-contract.md` — every endpoint you build must match this exactly. Field names, HTTP methods, response shapes — no deviations.
 - `docs/prd.md` — the product requirements. Understand what you're building before you build it.
 - `docs/decisions.md` — scope decisions, gaps, and deliberate technical choices.
@@ -28,7 +28,7 @@ The scope level in `docs/scope.md` is the lever. Calibrate exactly as follows:
 - Auth endpoints (if the contract defines any) return fake success responses. No real tokens.
 - Skip: `.env`, Supabase client, middleware, persistence.
 
-### `working demo` — full Supabase on the core loop
+### `MVP` — full Supabase on the core loop
 
 - Real Supabase. Real `@supabase/supabase-js`. Real JWT verification middleware on protected routes.
 - The core loop named in `docs/scope.md` uses full Supabase integration (real reads, real writes, real auth).
@@ -36,9 +36,9 @@ The scope level in `docs/scope.md` is the lever. Calibrate exactly as follows:
 - `seed.js` uses the Supabase admin client (service role key) to create a test user via `supabase.auth.admin.createUser` and populate tables.
 - No error boundaries beyond basic try/catch. No input validation beyond what Supabase itself enforces.
 
-### `pilot-ready` — working demo plus polish
+### `Prod` — MVP plus polish
 
-- Everything in `working demo`, plus:
+- Everything in `MVP`, plus:
 - Input validation on every POST/PUT endpoint — return 400 with a clear message on invalid input.
 - Try/catch on every route handler with sensible error responses (500 for unexpected, 4xx for client errors).
 - Consistent error response shape: `{ error: { message: string, code: string } }`.
@@ -68,7 +68,7 @@ For `clickable` scope, drop `supabase.js`, `middleware/auth.js`, and `seed.js`. 
 
 Do not create files outside of `server/`. Do not touch anything in `client/` or `docs/`.
 
-## What to build (working demo and pilot-ready)
+## What to build (MVP and Prod)
 
 **Express server on port 3001.** CORS configured to allow requests from `http://localhost:5173`.
 

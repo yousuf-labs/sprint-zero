@@ -29,16 +29,16 @@ The scope level in `docs/scope.md` is the lever. Calibrate exactly as follows:
 - Run: contract checks (UI calls map to contract endpoints), Playwright click-throughs of each product screen, snapshot verification.
 - No backend auth to exercise, so jump straight to the product flows.
 
-### `working demo`
+### `MVP`
 
 - Full contract checks on backend and frontend.
 - API integration tests on the core loop named in `docs/scope.md`.
 - Full Playwright auth dance: signup, confirm session, logout, login, access protected route, expired-token 401.
 - Playwright happy-path flow for the core loop (e.g. create a contact and verify it appears).
 
-### `pilot-ready`
+### `Prod`
 
-- Everything in `working demo`, plus:
+- Everything in `MVP`, plus:
 - One error-path Playwright test per loop (e.g. submit an invalid form, assert the error message renders).
 - Verify loading states appear during async operations.
 - API integration tests for every endpoint in the contract, not just the core loop.
@@ -93,7 +93,7 @@ cd ../client && npm install
 cd server && node index.js &
 ```
 
-Confirm it starts on port 3001 with no errors. For `working demo` and `pilot-ready`, run the seed script to create the test user and sample data:
+Confirm it starts on port 3001 with no errors. For `MVP` and `Prod`, run the seed script to create the test user and sample data:
 
 ```bash
 node server/seed.js
@@ -111,7 +111,7 @@ Confirm it starts on port 5173 with no console errors.
 
 **Step 6 — API integration tests**
 
-Create `server/tests/integration.test.js`. Test each endpoint per the scope level (core loop only for `working demo`, everything for `pilot-ready`). Skip this step entirely for `clickable`.
+Create `server/tests/integration.test.js`. Test each endpoint per the scope level (core loop only for `MVP`, everything for `Prod`). Skip this step entirely for `clickable`.
 
 For protected endpoints, you'll need a valid JWT. Obtain one by calling the login endpoint (or by using the Supabase admin client to mint a token) with the seeded test user's credentials. Send the token as `Authorization: Bearer <token>` on every subsequent protected call.
 
@@ -130,7 +130,7 @@ Use the Playwright MCP tools to drive a real browser against the running fronten
 3. Click through each product screen and snapshot each
 4. Close the browser
 
-### For `working demo` and `pilot-ready` scope — THE FULL AUTH DANCE
+### For `MVP` and `Prod` scope — THE FULL AUTH DANCE
 
 Use a fresh test email (generate a timestamped one, e.g. `qa-test-<timestamp>@example.com`) so signup doesn't collide with the seeded user.
 
@@ -148,7 +148,7 @@ Use a fresh test email (generate a timestamped one, e.g. `qa-test-<timestamp>@ex
 12. Take a snapshot confirming the product is visible (second session established)
 13. **Expired-token check**: using `mcp__playwright__browser_evaluate`, overwrite the Supabase session in `localStorage` with a clearly-invalid token (e.g. replace the `access_token` field with the string `"expired"`). Reload the page. Trigger any action that calls a protected endpoint. Assert the app handles the 401 gracefully — either redirects to `/login` or shows an auth error, per the PRD.
 14. Run the product happy-path for the core loop named in `docs/scope.md` — e.g. create the primary resource via the create form, wait for it to appear, take a snapshot.
-15. For `pilot-ready`: submit the create form with invalid input, assert a validation error renders.
+15. For `Prod`: submit the create form with invalid input, assert a validation error renders.
 16. Close the browser.
 
 If any step fails, record which step failed and what the failure was.
@@ -178,7 +178,7 @@ Output a QA report in this format:
 ```
 QA REPORT — Sprint Zero
 =======================
-Scope level: clickable / working demo / pilot-ready
+Scope level: clickable / MVP / Prod
 Core loop: <from scope.md>
 Backend contract check: PASS / FAIL (list any mismatches)
 Frontend contract check: PASS / FAIL (list any mismatches)
@@ -188,7 +188,7 @@ Seed script: PASS / FAIL / N/A
 API integration tests: X/X passed
 Auth dance (signup → session → logout → login → protected → 401): PASS / FAIL / N/A per step
 Browser happy path for core loop: PASS / FAIL
-Browser error-path tests (pilot-ready only): X/X passed
+Browser error-path tests (Prod only): X/X passed
 Fixes applied: (list anything you changed)
 ```
 

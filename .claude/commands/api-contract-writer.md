@@ -35,8 +35,8 @@ These don't need to be re-specified per endpoint — document them once at the t
 The contract shape is the same across levels — same endpoints, same request/response bodies. What changes:
 
 - `clickable` — backend returns hardcoded example responses, no database writes, no JWT verification. The contract documents the shape but marks every endpoint with `[MOCK]` in the Notes field.
-- `working demo` — full Supabase integration, JWT verification on protected routes.
-- `pilot-ready` — same as working demo plus: input validation with explicit error responses, rate limiting notes, and at least one error-path example per endpoint (e.g. 400, 401, 404, 409).
+- `MVP` — full Supabase integration, JWT verification on protected routes.
+- `Prod` — same as MVP plus: input validation with explicit error responses, rate limiting notes, and at least one error-path example per endpoint (e.g. 400, 401, 404, 409).
 
 ## Step 5 — Write `docs/api-contract.md`
 
@@ -70,7 +70,7 @@ Every entity is scoped to the authenticated user by `user_id`. List endpoints re
 **Auth:** required | public
 **Request body:** JSON example, or "none"
 **Response:** JSON example (use realistic data, not `"string"` placeholders)
-**Error responses (pilot-ready only):** List relevant 4xx codes with example bodies
+**Error responses (Prod only):** List relevant 4xx codes with example bodies
 **Notes:** Any edge cases, mock flags (`[MOCK]` for clickable level), or constraints
 
 (repeat for every endpoint)
@@ -98,7 +98,7 @@ Every entity is scoped to the authenticated user by `user_id`. List endpoints re
 - Every entity needs list / get / create / update / delete unless a user story explicitly rules one out.
 - Use realistic example data. "John Chen" not "string". "acme-corp" not "example".
 - Mark `clickable` endpoints with `[MOCK]` in Notes. Otherwise they're real.
-- For `pilot-ready`, include error responses for every Must-have endpoint.
+- For `Prod`, include error responses for every Must-have endpoint.
 - Never document `/auth/*` endpoints on the Express API. Supabase Auth owns that flow client-side.
 - Write to `docs/api-contract.md`. No user confirmation needed.
 - After writing, print: `API contract written. [N] entities, [N] endpoints. Spec set complete. Ready to hand off to the build layer (Phase 3 sub-agents).`

@@ -30,7 +30,7 @@ One command. One reference URL. Three scoping answers. You get:
 - A working build in `server/` and `client/` — Express + Supabase API, React frontend, real auth
 - Playwright-driven QA covering the auth dance and the core product loop
 
-For a `working demo` scope, expect ten to twenty minutes end-to-end.
+For a `MVP` scope, expect ten to twenty minutes end-to-end.
 
 ---
 
@@ -60,13 +60,13 @@ One command drives the whole flow. You watch it happen in the Claude Code termin
 
 You pick one when you answer the scoping question. The level is stored in `docs/scope.md` and calibrates every agent downstream.
 
-| Level          | What it produces                                           | Good for                        |
-| -------------- | ---------------------------------------------------------- | ------------------------------- |
-| `clickable`    | Mock backend, fake data, no auth                           | Pitching and flow reviews       |
-| `working demo` | Real Supabase, real auth, one core loop end-to-end         | Showing the idea actually works |
-| `pilot-ready`  | Working demo plus error states, validation, loading states | Handing to 5–10 real users      |
+| Level       | What it produces                                   | Good for                        |
+| ----------- | -------------------------------------------------- | ------------------------------- |
+| `clickable` | Mock backend, fake data, no auth                   | Pitching and flow reviews       |
+| `MVP`       | Real Supabase, real auth, one core loop end-to-end | Showing the idea actually works |
+| `Prod`      | MVP plus error states, validation, loading states  | Handing to 5–10 real users      |
 
-`working demo` is the main demo path for v1. `clickable` is an escape hatch for very early ideation.
+`MVP` is the main demo path for v1. `clickable` is an escape hatch for very early ideation.
 
 ---
 
@@ -217,22 +217,22 @@ Then in Claude Code:
 Pass any product URL you want to reference (a landing page, an open-source tool, a competitor). Sprint Zero will ask you three questions in one message — answer in a paragraph, no formatting needed:
 
 1. **Project name** — a short slug for this build
-2. **What level?** — `clickable`, `working demo`, or `pilot-ready`
+2. **What level?** — `clickable`, `MVP`, or `Prod`
 3. **What's the core loop?** — the one user flow that must work
 4. **Anything to exclude?** — features you don't want
 
 #### Example answer — a mini CRM referenced from [twenty.com](https://twenty.com/)
 
 > **What level are we building?**
-> working demo
+> MVP
 >
 > **What's the core loop?**
-> The core loop is: user creates a contact (name, email, company), creates a deal linked to that contact (name, value, stage), and moves the deal across pipeline stages (Lead → Qualified → Proposal → Closed Won / Closed Lost). That's what a working demo has to prove.
+> The core loop is: user creates a contact (name, email, company), creates a deal linked to that contact (name, value, stage), and moves the deal across pipeline stages (Lead → Qualified → Proposal → Closed Won / Closed Lost). That's what a MVP has to prove.
 >
 > **Anything to exclude?**
 > Companies as a separate entity (roll company into the contact record as a text field), custom fields, activities and notes on records, email integration, import / export, filters and saved views, search, reporting and dashboards, tasks, calendar, and any admin / settings UI.
 
-Notice how the excludes list is long and specific. That's the point — naming what you're cutting is how you keep a `working demo` to ten to twenty minutes and stop the agents from quietly building a full CRM.
+Notice how the excludes list is long and specific. That's the point — naming what you're cutting is how you keep a `MVP` to ten to twenty minutes and stop the agents from quietly building a full CRM.
 
 Sprint Zero handles the rest.
 

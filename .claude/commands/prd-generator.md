@@ -22,8 +22,8 @@ Rules for shaping:
 - **Authentication is non-negotiable** and always appears as Must-have user stories. The stack is Supabase Auth. Include sign up, log in, log out, and session persistence across reloads as explicit stories. Do not mark auth as [NEEDS INPUT] — it's a fixed part of the stack.
 - The build level shapes acceptance criteria:
   - `clickable` — acceptance criteria describe the UI behaviour only. No persistence.
-  - `working demo` — acceptance criteria describe real data persistence and the full auth dance on the core loop.
-  - `pilot-ready` — acceptance criteria include error states, validation, and one empty/loading state per screen.
+  - `MVP` — acceptance criteria describe real data persistence and the full auth dance on the core loop.
+  - `Prod` — acceptance criteria include error states, validation, and one empty/loading state per screen.
 
 ## Step 3 — Write `docs/prd.md`
 
@@ -32,7 +32,7 @@ Use this structure:
 ```markdown
 # [Product name] — PRD
 
-_Built with Sprint Zero. Reference: [company name]. Level: [clickable | working demo | pilot-ready]._
+_Built with Sprint Zero. Reference: [company name]. Level: [clickable | MVP | Prod]._
 
 ## 1. Problem statement
 
@@ -79,7 +79,7 @@ Stories from the reference that are out of scope for this level but worth noting
 
 Given/When/Then format for every Must-have story. Be concrete — the engineers read this as their build spec.
 
-For `pilot-ready` builds, every Must-have story also gets one error-path acceptance criterion.
+For `Prod` builds, every Must-have story also gets one error-path acceptance criterion.
 
 ## 7. Risks & assumptions
 

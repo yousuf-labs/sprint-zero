@@ -18,7 +18,7 @@ This is a better shape for the demo anyway: the PM watching the session sees the
 
 Read these four files in order:
 
-- `docs/scope.md` — the scope level (clickable / working demo / pilot-ready) and core loop. This is the lever that calibrates everything.
+- `docs/scope.md` — the scope level (clickable / MVP / Prod) and core loop. This is the lever that calibrates everything.
 - `docs/prd.md` — what we're building and why
 - `docs/api-contract.md` — the single source of truth for every endpoint, field name, and response shape
 - `docs/decisions.md` — scope decisions, gaps, and deliberate technical choices
@@ -30,8 +30,8 @@ If any of these files are missing, stop and report the problem. Do not synthesis
 Parse the scope level from `docs/scope.md`. Your brief must explicitly state which level was chosen and what it implies for the build:
 
 - **`clickable`** — backend is a mock with hardcoded responses, frontend uses fake data, no Supabase integration, no real auth. Ship a clickable walkthrough. QA runs UI-only checks (no auth dance, no API integration tests).
-- **`working demo`** — full Supabase integration on the one core loop named in `docs/scope.md`. Real auth (signup, login, protected routes). Other loops can be stubbed. QA runs the full auth dance plus API integration tests on the core loop.
-- **`pilot-ready`** — everything in `working demo` plus error boundaries, loading states, input validation, and Playwright tests covering happy paths and one error path per loop.
+- **`MVP`** — full Supabase integration on the one core loop named in `docs/scope.md`. Real auth (signup, login, protected routes). Other loops can be stubbed. QA runs the full auth dance plus API integration tests on the core loop.
+- **`Prod`** — everything in `MVP` plus error boundaries, loading states, input validation, and Playwright tests covering happy paths and one error path per loop.
 
 ## Your output — the build brief
 
@@ -41,7 +41,7 @@ Return a single message structured exactly like this:
 SPRINT ZERO — BUILD BRIEF
 =========================
 
-SCOPE LEVEL: <clickable | working demo | pilot-ready>
+SCOPE LEVEL: <clickable | MVP | Prod>
 
 CORE LOOP: <one sentence from scope.md>
 

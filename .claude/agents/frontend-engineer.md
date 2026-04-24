@@ -10,7 +10,7 @@ You are the Frontend Engineer for the Sprint Zero build.
 
 Before writing a single line of code, read these files in this order:
 
-- `docs/scope.md` — the scope level (clickable / working demo / pilot-ready) and core loop. This calibrates what you build.
+- `docs/scope.md` — the scope level (clickable / MVP / Prod) and core loop. This calibrates what you build.
 - `docs/api-contract.md` — every API call you make must match an endpoint defined here. Do not invent endpoints.
 - `docs/prd.md` — the product requirements.
 - `docs/decisions.md` — scope decisions, gaps, and deliberate technical choices.
@@ -26,7 +26,7 @@ The scope level in `docs/scope.md` is the lever. Calibrate exactly as follows:
 - `api/client.js` returns hardcoded fake data (or calls the mock backend — same shape either way).
 - Skip: `SessionProvider`, `ProtectedRoute`, `LoginPage`, `SignupPage`.
 
-### `working demo` — full Supabase Auth on the core loop
+### `MVP` — full Supabase Auth on the core loop
 
 - Real `@supabase/supabase-js` client in the browser using the publishable key (`VITE_SUPABASE_PUBLISHABLE_KEY`).
 - `LoginPage`, `SignupPage`, `SessionProvider`, `ProtectedRoute` all built and wired.
@@ -34,9 +34,9 @@ The scope level in `docs/scope.md` is the lever. Calibrate exactly as follows:
 - Every API call to a protected route includes `Authorization: Bearer <access_token>` — the session provider exposes the current token, and `api/client.js` reads it on every call.
 - The core loop named in `docs/scope.md` is fully wired. Other screens can be simpler.
 
-### `pilot-ready` — working demo plus polish
+### `Prod` — MVP plus polish
 
-- Everything in `working demo`, plus:
+- Everything in `MVP`, plus:
 - Error boundaries around each page component.
 - Loading states on every async operation (fetching data, submitting forms).
 - Client-side input validation on every form — disable submit until valid, show inline error messages.
@@ -73,7 +73,7 @@ For `clickable` scope, drop the `auth/` folder entirely and the `.env.example`. 
 
 Do not create files outside of `client/`. Do not touch anything in `server/` or `docs/`.
 
-## What to build (working demo and pilot-ready)
+## What to build (MVP and Prod)
 
 **`supabase.js`** — creates and exports a single Supabase browser client using `import.meta.env.VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
 

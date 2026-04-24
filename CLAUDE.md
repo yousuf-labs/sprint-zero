@@ -27,11 +27,11 @@ The audience is PMs, founders, and non-developers who can follow terminal output
 
 The user picks one of three levels up front. The scope level drives every downstream agent's behaviour.
 
-| Level          | What it produces                                                                                                           |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `clickable`    | Mock backend, fake data, no auth. Useful for pitching and flow reviews.                                                    |
-| `working demo` | Real Supabase, real auth, one core loop works end-to-end. The main v1 target.                                              |
-| `pilot-ready`  | Working demo plus error boundaries, loading states, input validation, and Playwright happy path + one error path per loop. |
+| Level       | What it produces                                                                                                  |
+| ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `clickable` | Mock backend, fake data, no auth. Useful for pitching and flow reviews.                                           |
+| `MVP`       | Real Supabase, real auth, one core loop works end-to-end. The main v1 target.                                     |
+| `Prod`      | MVP plus error boundaries, loading states, input validation, and Playwright happy path + one error path per loop. |
 
 `docs/scope.md` is the lever that carries this choice through the pipeline.
 
@@ -130,7 +130,7 @@ User
 
 - Runs the full auth dance (signup, session, logout, login, protected route, 401 on expired token)
 - Runs the core product loop end-to-end
-- At `pilot-ready` scope, adds one error-path test per loop
+- At `Prod` scope, adds one error-path test per loop
 - Reports pass/fail back to `tech-lead`
 
 ---

@@ -19,8 +19,8 @@ Ask the user exactly this, in one message:
 >
 > 1. **What level are we building?**
 >    - `clickable` — walkthrough with fake data, no backend (for pitching / stakeholder demos)
->    - `working demo` — real auth, real data, one core loop works end-to-end (for showing the idea actually works)
->    - `pilot-ready` — working demo plus error handling, loading states, input validation, polished enough for 5-10 real users
+>    - `MVP` — real auth, real data, one core loop works end-to-end (for showing the idea actually works)
+>    - `Prod` — MVP plus error handling, loading states, input validation, polished enough for 5-10 real users
 > 2. **What's the core loop?** The one user flow that matters most. If only one thing works, what is it?
 > 3. **Anything to exclude?** Features or patterns from the reference you explicitly do NOT want.
 
@@ -32,7 +32,7 @@ Extract three fields from the paragraph. If anything is unclear, fill the gap wi
 
 Defaults when ambiguous:
 
-- **Level** — default to `working demo`. That's the main demo path for v1.
+- **Level** — default to `MVP`. That's the main demo path for v1.
 - **Core loop** — infer from the company URL (e.g. a CRM's core loop is "add a contact, move a deal through a pipeline"). State the inference plainly.
 - **Excludes** — leave empty if not mentioned. No guessing.
 
@@ -50,7 +50,7 @@ Write the file in this exact structure:
 
 ## Build level
 
-**[clickable | working demo | pilot-ready]**
+**[clickable | MVP | Prod]**
 
 [One sentence describing what this level means for this build.]
 
