@@ -77,3 +77,10 @@ tmp/
 # notes
 plan.md
 .notes/
+
+# Presenter UI runtime state (status writes per phase, captured creds, server PID, etc.)
+.sprint-zero/
+
+# Presenter UI build output (committed source lives in presenter/src and presenter/server)
+presenter/dist/
+presenter/node_modules/

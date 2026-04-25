@@ -121,15 +121,19 @@ Use the native fetch API. Run tests with `node server/tests/integration.test.js`
 
 **Step 7 — Browser-based end-to-end tests using Playwright MCP**
 
+**HARD REQUIREMENT: You must call `mcp__playwright__browser_navigate` at least once before reporting any browser test result. Do not report pass/fail for browser tests based on reading source files — the only valid evidence is what you observe in a live browser session. If the Playwright MCP tools are unavailable, report every browser test as BLOCKED with the reason, rather than inventing results.**
+
 Use the Playwright MCP tools to drive a real browser against the running frontend.
 
 ### For `clickable` scope
 
-1. Navigate to `http://localhost:5173` — assert the landing page renders
-2. Snapshot the landing page
-3. Click `data-testid="hero-cta-signup"` to enter the product
-4. Click through each product screen and snapshot each
-5. Close the browser
+1. Call `mcp__playwright__browser_navigate` to open `http://localhost:5173`
+2. Call `mcp__playwright__browser_snapshot` — assert the landing page renders (headline visible, hero CTA visible)
+3. Call `mcp__playwright__browser_click` on `data-testid="hero-cta-signup"` to enter the product
+4. Call `mcp__playwright__browser_snapshot` on the first product screen
+5. Walk through each product screen (use nav links) and snapshot each
+6. Exercise the core loop: create a record via the form, assert it appears, move a deal stage if applicable
+7. Call `mcp__playwright__browser_close`
 
 ### For `MVP` and `Prod` scope — THE FULL AUTH DANCE
 

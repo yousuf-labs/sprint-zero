@@ -11,6 +11,7 @@ You are the Sprint Zero orchestrator. Your job: take a company URL (and optional
 - `--fresh` (optional flag): delete `docs/` before starting so all spec steps run fresh
 - `--rebuild` (optional flag): delete `server/` and `client/` before the build phase, forcing a clean rebuild
 - `--no-launch` (optional flag): skip the auto-launch step at the end. The user will start the servers manually.
+- `--present` (optional flag): boot the Sprint Zero presenter UI in the browser, collect scoping via the form instead of the terminal Q&A, and write a status file at every phase transition so the UI updates live. Used for demoing Sprint Zero to non-developers. See "Step 0 — Presenter mode" below.
 
 If `$ARGUMENTS` is empty, trigger the guided intake (see Step 1). If URLs are present, run non-interactively as described.
 
@@ -34,6 +35,64 @@ STATE: BUILD_BRIEF_NEEDED — fix the flagged doc issue reported by tech-lead, t
 STATE: BUILD_NEEDED       — re-spawn the failing engineer sub-agent directly, then spawn qa-engineer once both engineers complete
 STATE: QA_NEEDED          — fix the contract mismatches or test failures reported by qa-engineer, then re-spawn qa-engineer
 ```
+
+---
+
+## Step 0 — Presenter mode (only if `--present` was passed)
+
+Skip this whole step unless `$ARGUMENTS` contains `--present`.
+
+**0a. Boot the presenter server.**
+
+Run, in this exact order:
+
+```bash
+cd presenter && npm install --silent
+cd presenter && npm run build
+mkdir -p .sprint-zero
+nohup node presenter/server/index.mjs > .sprint-zero/presenter.log 2>&1 &
+```
+
+`npm install` is idempotent — npm skips it instantly if `presenter/node_modules` is already populated. The build is also idempotent at Vite's level. The server backgrounds itself; do not block the chat on it.
+
+Wait two seconds, then read `.sprint-zero/presenter.json` to learn the port the server bound to (it auto-picks 4000+ if 4000 is taken). The file looks like `{"url":"http://localhost:4000","port":4000}`.
+
+**0b. Open the browser.**
+
+Run `open <url>` (macOS) or `xdg-open <url>` (linux), where `<url>` is the URL from `presenter.json`. If `open` fails, do not abort — just print the URL so the user can click it.
+
+Print:
+
+> Presenter UI is up at <url>. Walk through the About section to teach the flow, then click "Start a run" to enter the scoping form.
+
+**0c. Status helper for the rest of this run.**
+
+Whenever a "presenter status update" is mentioned in steps 1–11 below, write a JSON file at `.sprint-zero/status.json` with this shape (keys are optional unless required by the specific step):
+
+```json
+{
+  "phase": "<one of: idle | waiting-for-scope | scoping | research | prd | decisions | stories | contract | brief | building | qa | launch | done | failed>",
+  "step": "<short slug, e.g. 'reference-brief'>",
+  "stepNumber": <1-10>,
+  "message": "<one short sentence the UI shows in the header>",
+  "timestamp": "<ISO 8601>",
+  "docs": ["scope.md", "reference-brief.md", ...],
+  "build": { "backend": "idle|running|done|failed", "frontend": "idle|running|done|failed" },
+  "qa": { "contractBackend": "pending|pass|fail", "contractFrontend": "pending|pass|fail", "integration": {"passed": 0, "total": 0}, "authDance": "pending|pass|fail|n/a", "coreLoop": "pending|pass|fail" },
+  "appUrl": null,
+  "credentials": null,
+  "projectName": null,
+  "failure": null
+}
+```
+
+Use `bash` with `cat <<EOF > .sprint-zero/status.json … EOF` to overwrite atomically. Always include `phase`, `message`, and `docs` (the list of files currently in `docs/`). Other keys are additive.
+
+If `--present` was NOT passed, ignore every "presenter status update" instruction in the steps below — the rest of the flow runs identically to before.
+
+**0d. Project name.**
+
+If the presenter UI submitted scoping, `.sprint-zero/meta.json` will exist and contain `projectName`. Read it and use that as the project name for the delivery summary in step 10. If the file is missing or empty, fall back to the company URL.
 
 ---
 
@@ -100,9 +159,19 @@ Check whether `docs/scope.md` exists. If it does, print:
 
 If it does not exist:
 
-Read `.claude/commands/sprint-zero-scope.md` and follow its instructions exactly. Do not summarise or simulate — read the actual file and do what it says. Pass the URLs from `$ARGUMENTS` as the arguments that command expects.
+**If `--present` was passed** — do NOT run the terminal scoping conversation. Instead:
+
+1. Write a presenter status update with `phase: "waiting-for-scope"`, `step: "scope"`, `stepNumber: 1`, `message: "Waiting for scope via the presenter UI."`. The UI will land on its scoping form.
+2. Print to the terminal: `Waiting for scope via <presenter-url>. The form will write docs/scope.md when submitted.`
+3. Poll for `docs/scope.md` to exist, checking once every 2 seconds, for up to 15 minutes. Use `bash`: `for i in $(seq 1 450); do [ -f docs/scope.md ] && break; sleep 2; done`.
+4. When the file appears, print `Scope received via presenter UI.` and continue. (The UI's `/api/scope` endpoint already wrote the file in the same format `/sprint-zero-scope` produces.)
+5. If the loop times out without the file appearing, print `STATE: SCOPE_NEEDED — submit the scoping form in the presenter, or run /sprint-zero again without --present.` and stop.
+
+**Otherwise (no `--present`)** — Read `.claude/commands/sprint-zero-scope.md` and follow its instructions exactly. Do not summarise or simulate — read the actual file and do what it says. Pass the URLs from `$ARGUMENTS` as the arguments that command expects.
 
 If `docs/scope.md` is not written by the end of this step, print `STATE: SCOPE_NEEDED` with recovery instructions and stop.
+
+**Presenter status update** (only when `--present`): write `phase: "research"`, `step: "reference-brief"`, `stepNumber: 2`, `message: "Researching the reference."`, and refresh the `docs` array.
 
 ---
 
@@ -280,6 +349,53 @@ To stop the servers later:
 ```
 
 If any sub-step in 11 fails, print `STATE: LAUNCH_FAILED — start the servers manually per the README.` and stop. Do not retry. The build succeeded — only the launch did not.
+
+---
+
+## Presenter status updates per step (only when `--present` was passed)
+
+Skip this whole section unless `--present` was set. The flow proceeds identically without it.
+
+When `--present` is active, write `.sprint-zero/status.json` once at the start of each step below, after the existing print statements but before invoking the sub-command. Always re-list the `docs/` directory contents into the `docs` array. Always set `timestamp` to the current ISO 8601 string. Never block on the write — it's atomic and trivially fast.
+
+| Step | `phase`     | `stepNumber` | `step`             | `message`                                            |
+| ---- | ----------- | ------------ | ------------------ | ---------------------------------------------------- |
+| 3    | `research`  | 2            | `reference-brief`  | Researching the reference product.                   |
+| 4    | `prd`       | 3            | `prd`              | Drafting the PRD.                                    |
+| 5    | `decisions` | 4            | `decisions`        | Logging scope cuts and tradeoffs.                    |
+| 6    | `stories`   | 5            | `user-stories`     | Expanding stories with acceptance criteria.          |
+| 7    | `contract`  | 6            | `api-contract`     | Writing the API contract.                            |
+| 8    | `brief`     | 7            | `tech-lead-brief`  | Tech-lead is reading the spec set.                   |
+| 9    | `building`  | 8            | `parallel-build`   | Backend and frontend building in parallel.           |
+| 9    | `qa`        | 9            | `qa`               | QA: contract checks, auth dance, core loop.          |
+| 11   | `launch`    | 10           | `launch`           | Installing, seeding, and starting the servers.       |
+
+For step 9 (parallel build), set `build.backend` and `build.frontend` to `"running"` when spawning the engineers, and to `"done"` (or `"failed"`) when each returns. Write the status file again after each engineer reports.
+
+For step 9 (QA), populate the `qa` block as the engineer's report comes back: `contractBackend`, `contractFrontend`, `integration` (`{passed, total}`), `authDance`, and `coreLoop`. Use `"pending"` while a check is in flight, `"pass"`/`"fail"` once it lands, and `"n/a"` for `authDance` when scope is `clickable`.
+
+**On step 11f (launch summary)**, write a final status with:
+
+- `phase: "done"`
+- `appUrl: "http://localhost:5173"`
+- `credentials: { "email": "<from seed stdout>", "password": "<from seed stdout>" }`
+- `projectName: "<the project name from .sprint-zero/meta.json or step 1>"`
+- `message: "Sprint Zero finished. Open the app."`
+
+**On any named-failure exit**, before stopping, write:
+
+```json
+{
+  "phase": "failed",
+  "failure": {
+    "state": "<the named state, e.g. SCOPE_NEEDED>",
+    "message": "<one short sentence on what went wrong>",
+    "recovery": "<the same recovery instructions you printed>"
+  }
+}
+```
+
+This lets the presenter UI show the failure card instead of spinning indefinitely.
 
 <!-- $ARGUMENTS is the interpolation token Claude Code replaces with everything the user typed after /sprint-zero. It must appear in the file for URL and flag values to be accessible throughout these instructions. -->
 $ARGUMENTS

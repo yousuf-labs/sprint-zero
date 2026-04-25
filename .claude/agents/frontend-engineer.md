@@ -22,9 +22,10 @@ The scope level in `docs/scope.md` is the lever. Calibrate exactly as follows:
 ### `clickable` — fake data, no auth
 
 - No Supabase. No session provider. No protected routes. No real login/signup flows.
-- The app opens straight into the product screens.
 - `api/client.js` returns hardcoded fake data (or calls the mock backend — same shape either way).
 - Skip: `SessionProvider`, `ProtectedRoute`, `LoginPage`, `SignupPage`.
+- **The landing page always ships**, even at clickable scope. See the `LandingPage.jsx` section below. The hero CTA goes directly to the first product screen (not `/signup`). The app opens at `/` — do NOT redirect `/` to a product screen.
+- Route `/` → `LandingPage`. All product screens are accessible via the nav after clicking the CTA.
 
 ### `MVP` — full Supabase Auth on the core loop
 

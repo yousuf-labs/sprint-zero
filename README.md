@@ -346,11 +346,12 @@ Every spec command works on its own. Delete the target file first if you want to
 
 ### Flags on `/sprint-zero`
 
-| Flag          | Effect                                                              |
-| ------------- | ------------------------------------------------------------------- |
-| `--fresh`     | Delete `docs/` and regenerate all specs from scratch                |
-| `--rebuild`   | Delete `server/` and `client/` and rebuild from existing specs      |
-| `--no-launch` | Skip auto-launch at the end. Start the servers manually afterwards. |
+| Flag          | Effect                                                                                     |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| `--fresh`     | Delete `docs/` and regenerate all specs from scratch                                       |
+| `--rebuild`   | Delete `server/` and `client/` and rebuild from existing specs                             |
+| `--no-launch` | Skip auto-launch at the end. Start the servers manually afterwards.                        |
+| `--present`   | Boot the presenter UI in the browser. Collects scoping via a form and shows live progress. |
 
 Example: `/sprint-zero https://example.com --fresh`
 
@@ -367,6 +368,30 @@ If anything goes wrong, `/sprint-zero` prints a named state and a recovery instr
 | `BUILD_NEEDED`       | An engineer failed              | Re-spawn the failing engineer, then QA        |
 | `QA_NEEDED`          | Tests failed                    | Fix the reported issues, re-spawn QA          |
 | `LAUNCH_FAILED`      | Auto-launch at the end failed   | Start the servers manually (see above)        |
+
+---
+
+## Sprint Zero — `--present` mode
+
+For walking PMs or non-developers through Sprint Zero, run it with `--present`:
+
+```
+/sprint-zero https://twenty.com https://github.com/twentyhq/twenty --present
+```
+
+A polished local UI boots at `http://localhost:4000` and opens in the browser. Use it for three phases of the demo:
+
+1. **About** — explains scope levels, the agent topology, and the spec pipeline. Stay here while you talk through the concept.
+2. **Start a run** — a form replaces the terminal scoping conversation. Submitting it writes `docs/scope.md`.
+3. **Live** — a vertical pipeline timeline updates in real time as each spec doc lands. Click any completed step to view its rendered markdown. The build phase shows backend and frontend as side-by-side cards. When the run finishes, the screen reveals the running app's URL with a copyable demo login.
+
+The presenter is a permanent committed part of the kit, not a one-off. The terminal narration is unchanged, so you can also screen-share the Claude Code window alongside the UI.
+
+To boot the presenter on its own (without a Sprint Zero run):
+
+```
+cd presenter && npm install && npm run build && npm start
+```
 
 ---
 
